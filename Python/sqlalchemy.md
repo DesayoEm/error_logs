@@ -1,8 +1,45 @@
 # SQLAlchemy Errors
 
 
-### 
-## Error Category: Category
+
+###
+## Error Category: Type Annotation Conflict
+
+**Date:** 10 Mar 2025
+**Context:**  SQLAlchemy ORM Model Definition
+
+**Error:**
+```python
+TypeError: Boolean value of this clause is not defined
+```
+**Code:**
+```python
+class StaffAvailability(Base, TimeStampMixins):
+    # ...
+    date: Mapped[date] = mapped_column(Date)
+    # ...
+```
+**Solution:**
+import datetime
+```python
+class StaffAvailability(Base, TimeStampMixins):
+    # ...
+    date: Mapped[datetime.date] = mapped_column(Date)
+    # ...
+```
+
+**Explanation:**  
+The error occured because of a naming conflict between the column name date and the Python type date used in the type annotation. 
+
+When SQLAlchemy processes type annotations, it needs to determine if the type includes None to establish nullability.
+
+The ambiguity caused SQLAlchemy to try evaluating the clause itself as a boolean expression rather than checking the type, resulting in the error. 
+The solution is to either rename the column to something other than date or rename the imported type to avoid the collision.
+
+
+
+
+
 
 **Date:** 04 Feb 2024
 **Context:** TraKademik

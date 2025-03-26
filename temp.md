@@ -9,3 +9,18 @@
 **Error:**
 ```python
 Error: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+**Code:**
+```python
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
+
+**Solution:**
+
+```python
+XXXXXXXXXXXXXXXX
+```
+
+**Explanation:**  
