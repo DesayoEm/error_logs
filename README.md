@@ -1,10 +1,14 @@
-# Engineering Battle Logs
+# Debugging logs
 
-Welcome to my collection of mistakes, solutions, and debugging notes,
-This repository documents errors and fixes I've encountered while working with different tools. If it blocked me, it's worth documenting.
+Welcome to my personal collection of mistakes, solutions, and debugging notes.
+
+This repository documents errors and fixes I've encountered while working with different tools. 
+
+No error is too small or insignificant. If it blocked me, it's worth documenting and could help someone too.
 
 
-I'd make here a joke about collecting bugs like infinity stones but gauntlets aren't my style and I weirdly only have 5 fingers on each hand.
+I'd make here a joke about collecting bugs like infinity stones but gauntlets  aren't my style and I weirdly only have 5 fingers on each hand(like everyone else)🤦🏽‍♀️.
+
 They'd be too many to fit on one gauntlet anyway 💀.
 
 ---
@@ -23,6 +27,6 @@ They'd be too many to fit on one gauntlet anyway 💀.
 ## Why This Exists
 
 * **Future debugging.** I come back here sometimes when I encounter the same errors again.
-* **Hopefully it helps someone.** ¯\_(ツ)_/¯
+* **Hopefully it helps someone.** 🤷🏽‍♀️
 
 
