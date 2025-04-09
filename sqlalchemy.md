@@ -4,7 +4,7 @@
 ## Error Category: Category
 
 **Date:** 08 Apr 2025
-**Context:** Deleting a parent entity (Educator) with children (EducatorQualification) having ondelete='CASCADE' on their foreign key.
+**Context:** Deleting a Parent entity that has related Child records (CASCADE).
 
 **Error:**
 ```python
@@ -15,14 +15,29 @@ DETAIL: Failing row contains (..., NULL, ...).
 
 **Code:**
 ```python
-educator_id: Mapped[UUID] = mapped_column(
-    ForeignKey('educators.id', ondelete='CASCADE', name='fk_educator_qualifications_educator_id')
-)
-educator: Mapped['Educator'] = relationship(
-    'Educator', 
-    back_populates='qualifications',
-    foreign_keys="[EducatorQualification.educator_id]"
-)
+class Educator(Staff):
+    __tablename__ = 'educators'
+
+    id: Mapped[UUID] = mapped_column(
+        ForeignKey('staff.id', ondelete='CASCADE', name='fk_educators_staff_id'),
+        primary_key=True
+    )
+
+    qualifications: Mapped[List['EducatorQualification']] = relationship(
+        back_populates='educator'
+    )
+    
+    class EducatorQualification(Base, AuditMixins, TimeStampMixins, ArchiveMixins):
+    educator_id: Mapped[UUID] = mapped_column(ForeignKey('educators.id',
+            ondelete='CASCADE', name='fk_educator_qualifications_educators_educator_id')
+        )
+
+    # Relationships
+    educator: Mapped['Educator'] = relationship(
+        'Educator', back_populates='qualifications',
+        foreign_keys="[EducatorQualification.educator_id]"
+    )
+
 
 ```
 
@@ -30,24 +45,38 @@ educator: Mapped['Educator'] = relationship(
 **Solution:**
 
 ```python
-educator: Mapped['Educator'] = relationship(
-    'Educator',
-    back_populates='qualifications',
-    foreign_keys="[EducatorQualification.educator_id]",
-    passive_deletes=True
+class Educator(Staff):
+    __tablename__ = 'educators'
+
+    id: Mapped[UUID] = mapped_column(
+        ForeignKey('staff.id', ondelete='CASCADE', name='fk_educators_staff_id'),
+        primary_key=True
+    )
+
+    qualifications: Mapped[List['EducatorQualification']] = relationship(
+        back_populates='educator',
+        cascade="all, delete-orphan"  #Added cascade behavior at ORM level
+    )
+
 )
+
+class EducatorQualification(Base, AuditMixins, TimeStampMixins, ArchiveMixins):
+    educator_id: Mapped[UUID] = mapped_column(ForeignKey('educators.id',
+            ondelete='CASCADE', name='fk_educator_qualifications_educators_educator_id')
+        )
+
+    # Relationships
+    educator: Mapped['Educator'] = relationship(
+        'Educator', back_populates='qualifications',
+        foreign_keys="[EducatorQualification.educator_id]", passive_deletes=True
+    )
 
 ```
 
 **Explanation:**  
-Even though the database foreign key uses ondelete='CASCADE', SQLAlchemy ORM by default tries to NULL the child foreign key before the parent is deleted.
+By adding cascade=\"all, delete-orphan\" to the parent Educator.qualifications relationship, SQLAlchemy ensures that when an Educator is deleted, all associated EducatorQualification records are also deleted automatically before the database constraints are triggered.
 
-Since educator_id is a NOT NULL column, this attempt fails and raises a constraint error.
-
-By adding passive_deletes=True to the relationship(), SQLAlchemy trusts the database to handle the deletion, avoiding manual NULLing, and the cascade works properly.
-
-
-
+This solves the NOT NULL violation by cleaning up dependent records in the ORM session.
 
 ###
 ## Error Category: Type Annotation Conflict
