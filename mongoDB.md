@@ -1,7 +1,36 @@
 # Mongo DB Errors
 
-###
-## Error Category: Empty Results from MongoDB Query
+
+## Error Category: JSON Serialization
+
+**Date:** 30 Apr 2024
+
+**Context:** JSON Serialization
+
+**Error:**
+MongoDB documents include datetime objects which cannot be directly serialized to JSON by Python's default encoder.
+```python
+TypeError: Object of type datetime is not JSON serializable
+```
+
+**Solution:**
+
+```python
+    def json_serialize_doc(document: dict) -> dict:
+        """Convert MongoDB objects for JSON serialization."""
+        if document is None:
+            return None
+
+        doc = document.copy()
+        for key, value in doc.items():
+            if isinstance(value, datetime):
+                doc[key] = value.isoformat()
+
+        if "_id" in doc:
+            doc["_id"] = str(doc["_id"])
+        return doc
+```
+
 
 **Date:** 30 Apr 2024
 **Context:**  Endpoint was returning an empty list even though data existed in the database.
